@@ -1,0 +1,87 @@
+<html>
+    <head>
+      
+    </head>
+    <body>
+        <p id='output'></p>
+        
+        <script type="text/javascript">
+// (function () {
+//    var old = console.log;
+//    // var oldErr = console.error;
+//    var logger = document.getElementById('output');
+//    console.log = function (message) {
+//        if (typeof message == 'object') {
+//            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+//        } else {
+//            logger.innerHTML += message + '<br />';
+//        }
+//    }
+// })();
+
+window.console=(function(origConsole){
+ 	var logger = document.getElementById('output');
+    if(!window.console)
+      console = {};
+    var isDebug=false,
+    logArray = {
+      logs: [],
+      errors: [],
+      warns: [],
+      infos: []
+    }
+    return {
+        log: function(){
+          logArray.logs.push(Array.prototype.slice.call(arguments));
+         origConsole.log && origConsole.log.apply(origConsole,arguments);
+          logger.innerHTML += logArray.logs[0];
+        
+        },
+        warn: function(){
+          logArray.warns.push(Array.prototype.slice.call(arguments))
+          isDebug && origConsole.warn && origConsole.warn.apply(origConsole,arguments);
+          logger.innerHTML += logArray.warns[0];
+        },
+        error: function(){
+          logArray.errors.push(Array.prototype.slice.call(arguments))
+          isDebug && origConsole.error && origConsole.error.apply(origConsole,arguments);
+          // logger.innerHTML += logArray.errors[0];
+        },
+        info: function(v){
+          logArray.infos.push(arguments)
+          isDebug && origConsole.info && origConsole.info.apply(origConsole,arguments);
+        },
+        debug: function(bool){
+          isDebug = bool;
+        },
+        logArray: function(){
+          return logArray;
+        }
+    };
+
+}(window.console));
+
+
+       </script>
+<input type="text" placeholder="your code" id="code">
+        <script type="text/javascript">
+        function submitCode(){
+        		// var err = new Error();
+        		var inputCode = document.getElementById('code')
+        		var script   = document.createElement("script");
+				script.type  = "text/javascript";
+				if(console.error()){
+					console.log('hi')
+					// console.log(console.error());
+				}
+				script.text  =  inputCode.value;             // use this for inline script
+				document.body.appendChild(script);
+
+        	}
+
+        </script>
+<button id="submitCode" onClick='submitCode()'>Submit</button>
+      
+       
+    </body>
+</html>
